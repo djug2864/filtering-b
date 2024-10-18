@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<link rel="stylesheet" href="style.css">
+  <title>ブラウザ</title>
+</head>
+<body>
+  <div id="button-container">
+    <input type="text" id="url" placeholder="URLを入力">
+    <button onclick="loadURL()">開く</button>
+<button onclick="closeTab()">終了</button>
+  </div>
+  <iframe id="content" width="100%" height="600"></iframe>
+  <script>
+    function loadURL() {
+      const url = document.getElementById('url').value;
+      const iframe = document.getElementById('content');
+      iframe.src = url;
+
+      // ブラウザのバックボタン無効化
+      window.history.pushState({}, '', '#');
+    }
+
+    function goBack() {
+      window.history.back();
+    }
+
+    function reload() {
+      const iframe = document.getElementById('content');
+      iframe.reload();
+    }
+
+   
+  </script>
+</body>
+</html>
+<script>
+    function closeTab() {
+        window.close();
+    }
+  </script>
