@@ -39,3 +39,33 @@ body {
   }
 }
 // ダークライト
+/* ここにスタイルを記述 */
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    #button-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    #url {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    iframe {
+      border: none;
+    }
