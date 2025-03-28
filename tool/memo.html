@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+<head>
+<title>メモ</title>
+</head>
+<body>
+
+<style>
+/*全体*/
+body {
+            font-family: 'Roboto', sans-serif; /* Material 3のフォント */
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa; /* Material 3の背景色 */
+            color: #212121; /* Material 3のテキスト色 */
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 16px; /* Material 3の角丸 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Material 3の影 */
+            padding: 24px;
+        }
+        h1 {
+            text-align: center;
+            color: #4169e1; /* Material 3のプライマリーカラー */
+            margin-bottom: 24px;
+            font-size: 2rem; /* Material 3の見出しサイズ */
+        }
+
+/*リンクボタン*/
+
+        .more-links a {
+            text-decoration: none;
+            color: #1976d2;
+            padding: 10px 16px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .more-links a:hover {
+            background-color: #e3f2fd;
+        }
+
+        .more-links ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+            display: flex;
+            justify-content: right;
+        }
+
+/*リンクタブ*/
+
+.browser-tabs-container {
+    display: flex;
+    justify-content: center; /* 中央揃えを追加 */
+    border-bottom: 1px solid #ccc;
+}
+.browser-tab-button {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    padding: 8px 16px;
+    margin: 0 2px;
+    cursor: pointer;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    font-size: 14px;
+}
+.browser-tab-button.active {
+    background-color: white;
+    border-bottom: 1px solid white;
+}
+.browser-tab-button:hover {
+    background-color: #e0e0e0;
+}
+
+/*メモ*/
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.btn-primary {
+  background-color: #4169e1;
+  color: white; /* 特定のボタンだけに適用 */
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  background-color: #a9a9a9;
+  color: white; /* 特定のボタンだけに適用 */
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+.memo-item {
+  background-color: #f9f9f9;
+  padding: 10px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.memo-item button {
+  background-color: #dc3545;
+  margin-left: 5px;
+}
+
+.memo-item button.edit {
+  background-color: #ffc107;
+}
+
+.btn-delete {
+  background-color: #ED1A3D;
+  color: white; /* 特定のボタンだけに適用 */
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.memo-add {
+  background-color: #4169e1;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  width: 100%; /* ボタンを左右いっぱいに広げる */
+  display: block; /* ブロック要素にする */
+  margin: 20px auto;
+  text-align: center;
+}
+</style>
+
+<div class="browser-tabs-container">
+  <button class="browser-tab-button" onclick="location.href='https://djug2864.github.io/filtering-b/'">サイトトップ</button>
+  <button class="browser-tab-button" onclick="location.href='https://djug2864.github.io/'">開発者のページ</button>
+</div>
+
+
+<div class="container">
+    <h1>メモ</h1>
+    <textarea id="memoInput"></textarea>
+    <button id="addButton" class="memo-add">追加</button>
+    <div id="memoList"></div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>メモ編集</h2>
+            <textarea id="editInput"></textarea>
+            <button id="saveButton" class="btn-primary">保存</button>
+        </div>
+    </div>
+
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <p>このメモを削除しますか？</p>
+            <button id="confirmDelete" class="btn-delete">削除</button>
+            <button id="cancelDelete" class="btn-cancel">キャンセル</button>
+        </div>
+    </div>
+
+</body>
+</html>
+<script>
+        const memoInput = document.getElementById('memoInput');
+        const addButton = document.getElementById('addButton');
+        const memoList = document.getElementById('memoList');
+        const editModal = document.getElementById('editModal');
+        const editInput = document.getElementById('editInput');
+        const saveButton = document.getElementById('saveButton');
+        const deleteModal = document.getElementById('deleteModal');
+        const confirmDelete = document.getElementById('confirmDelete');
+        const cancelDelete = document.getElementById('cancelDelete');
+        const closeModal = document.getElementsByClassName('close')[0];
+
+        let memos = getMemosFromCookie();
+        let editIndex = -1;
+        let deleteIndex = -1;
+
+        function getMemosFromCookie() {
+            const cookie = document.cookie.split('; ').find(row => row.startsWith('memos='));
+            return cookie ? JSON.parse(cookie.split('=')[1]) : [];
+        }
+
+        function setMemosToCookie(memos) {
+            document.cookie = `memos=${JSON.stringify(memos)}`;
+        }
+
+        function renderMemos() {
+            memoList.innerHTML = '';
+            memos.forEach((memo, index) => {
+                const memoItem = document.createElement('div');
+                memoItem.innerHTML = `
+                    <p>${memo}</p>
+                    <button class="editButton" data-index="${index}">編集</button>
+                    <button class="deleteButton" data-index="${index}">削除</button>
+                `;
+                memoList.appendChild(memoItem);
+            });
+
+            // イベントリスナー設定
+            document.querySelectorAll('.editButton').forEach(button => {
+                button.addEventListener('click', () => {
+                    editIndex = button.dataset.index;
+                    editInput.value = memos[editIndex];
+                    editModal.style.display = "block";
+                });
+            });
+
+            document.querySelectorAll('.deleteButton').forEach(button => {
+                button.addEventListener('click', () => {
+                    deleteIndex = button.dataset.index;
+                    deleteModal.style.display = "block";
+                });
+            });
+        }
+
+        addButton.addEventListener('click', () => {
+            const memo = memoInput.value;
+            if (memo) {
+                memos.push(memo);
+                setMemosToCookie(memos);
+                renderMemos();
+                memoInput.value = '';
+            }
+        });
+
+        saveButton.addEventListener('click', () => {
+            memos[editIndex] = editInput.value;
+            setMemosToCookie(memos);
+            renderMemos();
+            editModal.style.display = "none";
+        });
+
+        confirmDelete.addEventListener('click', () => {
+            memos.splice(deleteIndex, 1);
+            setMemosToCookie(memos);
+            renderMemos();
+            deleteModal.style.display = "none";
+        });
+
+        cancelDelete.addEventListener('click', () => {
+            deleteModal.style.display = "none";
+        });
+
+        closeModal.addEventListener('click', () => {
+            editModal.style.display = "none";
+        });
+
+        renderMemos();
+    </script>
